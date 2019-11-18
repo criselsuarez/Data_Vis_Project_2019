@@ -27,7 +27,7 @@ Real End Angle where particioant ended
 '''
 
 
-filename ='//Users//csuarez//Documents//GitHub//Data_Vis_Project_2019//Spatial Mem Data (Adults)//stairs_full_r1_05PK.csv'
+filename ='//Users//csuarez//Documents//GitHub//Data_Vis_Project_2019//Spatial_Mem_Data_Adults//stairs_full_r1_05PK.csv'
 
 df=pd.read_csv(filename)
 
@@ -62,7 +62,7 @@ ax.plot(np.deg2rad(obj7[' RealEndAngleX'][np.isfinite(obj7[' RealEndAngleX'])].v
 ax.plot(np.deg2rad(obj8[' RealEndAngleX'][np.isfinite(obj8[' RealEndAngleX'])].values[1]), np.deg2rad(obj8[' RealEndAngleY'][np.isfinite(obj8[' RealEndAngleY'])].values[1]), ls ='None', marker = 'o', color = 'darkviolet', alpha = alph)
 
 
-
+#'''
 ax.plot(np.deg2rad(obj3[' RealEndAngleX'][np.isfinite(obj3[' RealEndAngleX'])]), np.deg2rad(obj3[' RealEndAngleY'][np.isfinite(obj3[' RealEndAngleY'])]), ls ='None', marker = 'o', color = 'blue', alpha = alph)
 
 

@@ -28,7 +28,7 @@ Real End Angle where particioant ended
 '''
 
 
-filename ='//Users//csuarez//Documents//GitHub//Data_Vis_Project_2019//Spatial Mem Data (Adults)//full_data_all.csv'
+filename ='//Users//csuarez//Documents//GitHub//Data_Vis_Project_2019//Spatial_Mem_Data_Adults//full_data_all.csv'
 
 df=pd.read_csv(filename)
 
@@ -122,7 +122,7 @@ obj8_mean_y_perfect = np.mean(obj8[' PerfectEndAngleY'][np.isfinite(obj8[' Perfe
 
 
 
-
+'''
 ax = plt.subplot(111, projection='polar') # theta, r 
 alph = .5
 ax.plot(np.deg2rad(obj0_mean_x), np.deg2rad(obj0_mean_y), ls ='None', marker = 'o', color = 'green' , alpha = alph)
@@ -198,7 +198,7 @@ ax2.plot(obj8_mean_x_perfect, obj8_mean_y_perfect, marker = '*', color = 'darkvi
 plt.ylabel('y angle error')
 plt.xlabel('x angle error')
 
-'''
+#'''
 
 
 

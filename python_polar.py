@@ -27,7 +27,7 @@ Real End Angle where particioant ended
 '''
 
 
-filename ='//Users//csuarez//Documents//GitHub//Data_Vis_Project_2019//Spatial Mem Data (Adults)//stairs_full_r1_05PK.csv'
+filename ='//Users//csuarez//Documents//GitHub//Data_Vis_Project_2019//Spatial_Mem_Data_Adults//stairs_full_r1_05PK.csv'
 
 df=pd.read_csv(filename)
 
