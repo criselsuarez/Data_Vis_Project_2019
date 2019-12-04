@@ -38,7 +38,7 @@ function getOuterRadius(index) {
 }
 
 
-function plot_it() {
+function plot_it2() {
 
 
     var svg = d3.select("body").append("svg")
@@ -75,7 +75,7 @@ function plot_it() {
     let radialAxis = svg.append('g')
         .attr('class', 'r axis')
         .selectAll('g')
-        .data(spatial_data)
+        .data(spatial_data_mod)
         .enter().append('g');
 
     radialAxis.append('circle')
@@ -140,7 +140,7 @@ function plot_it() {
     let arcs = svg.append('g')
         .attr('class', 'data')
         .selectAll('path')
-        .data(spatial_data)
+        .data(spatial_data_mod)
         .enter().append('path')
         .attr('class', 'arc')
         .style('fill', (d) => colors[d.ObjectIndex-1]);

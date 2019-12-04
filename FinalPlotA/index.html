@@ -8,10 +8,14 @@
 <body>
     <script type='text/javascript' src='project_plot.js'></script>
     <script type='text/javascript'> 
-        d3.csv('spatial_memory_adult_avg_errs_abssort.csv', function (data) {
+        d3.csv('spatial_memory_adult.csv', function (data) {
                 spatial_data = data;
                 plot_it();
-            })
+        })
+        d3.csv('spatial_memory_adult_avg_errs_abssort.csv', function (data) {
+            spatial_data_mod = data;
+            plot_it2();
+        })
     </script>
 </body>
 </html>
