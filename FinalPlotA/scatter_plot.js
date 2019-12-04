@@ -1,13 +1,14 @@
 var object_clicked;
 
 function plot_it() {
+    var svg_width = 2000; 
 
     var margin = { top: 20, right: 10, bottom: 20, left: 10 };
     var width = 960 - margin.left - margin.right,
         height = 600 - margin.top - margin.bottom;
 
     var svg = d3.select("body").append("svg")
-        .attr("width", width + margin.left + margin.right)
+        .attr("width",svg_width)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
