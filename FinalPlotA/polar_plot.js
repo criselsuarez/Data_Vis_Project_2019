@@ -39,16 +39,12 @@ function getOuterRadius(index) {
 
 
 function plot_it2() {
+    var scatter_dimensions = 530;
+    var another_top_padding = 50;
 
-
-    var svg = d3.select("body").append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + (margin.left*2 + chartRadius) + "," + (margin.top*2 + chartRadius) + ")");
-
+    var svg = d3.select("body").select("svg");
     var polar_g = svg.append("g")
-        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+        .attr("transform", "translate(" + (scatter_dimensions + width / 2) + "," + (another_top_padding + height / 2) + ")");
 
     var fullCircle = 360; // 2 * Math.PI; // 360 degrees in radians 
     var circle_radians = [0, 6.28319];
@@ -72,7 +68,7 @@ function plot_it2() {
         .endAngle((d, i) => err_scale(d))
 
     // RADIAL AXIS
-    let radialAxis = svg.append('g')
+    let radialAxis = polar_g.append('g')
         .attr('class', 'r axis')
         .selectAll('g')
         .data(spatial_data_mod)
@@ -100,7 +96,7 @@ function plot_it2() {
 
     // AXIAL AXIS 
     
-    let axialAxis = svg.append('g') 
+    let axialAxis = polar_g.append('g') 
         .attr('class', 'a axis')
         .selectAll('g')
         .data(some_data_deg2)
@@ -123,21 +119,21 @@ function plot_it2() {
 
 
     // CHART TITLE
-    var title = svg.append("g")
+    var title = polar_g.append("g")
         .attr("class", "title")
         .append("text")
         .attr("dy", "-0.2em")
         .attr("text-anchor", "middle")
         .text("Avg Turning Error")
 
-    var subtitle = svg.append("text") // OOH LA LA YESS 
+    var subtitle = polar_g.append("text") // OOH LA LA YESS 
         .attr("dy", "1em")
         .attr("text-anchor", "middle")
         .attr("opacity", 0.6)
         .text("Left / Right");
 
     //DATA ARCS    
-    let arcs = svg.append('g')
+    let arcs = polar_g.append('g')
         .attr('class', 'data')
         .selectAll('path')
         .data(spatial_data_mod)
