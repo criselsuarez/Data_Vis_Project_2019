@@ -6,12 +6,19 @@
     <script type='text/javascript' src='https://d3js.org/d3.v4.min.js'></script>
 </head> 
 <body>
-    <script type='text/javascript' src='project_plot.js'></script>
+    <script type='text/javascript' src='polar_plot.js'></script>
+    <script type='text/javascript' src='scatter_plot.js'></script>
     <script type='text/javascript'> 
         d3.csv('spatial_memory_adult.csv', function (data) {
                 spatial_data = data;
                 plot_it();
         })
+        
+        d3.csv('full_data_all.csv', function (data) {
+                all_data = data;
+                plot_it_b();
+        })
+        
         d3.csv('spatial_memory_adult_avg_errs_abssort.csv', function (data) {
             spatial_data_mod = data;
             plot_it2();

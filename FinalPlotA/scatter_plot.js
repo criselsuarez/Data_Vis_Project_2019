@@ -249,3 +249,8 @@ function plot_it() {
 		    .attr('font-size', '10px');
 	    }
 }
+
+function plot_it_b() 
+{
+    var nick = all_data;
+}
