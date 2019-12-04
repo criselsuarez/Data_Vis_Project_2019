@@ -1,4 +1,4 @@
-
+var object_clicked;
 
 function plot_it() {
 
@@ -247,10 +247,17 @@ function plot_it() {
 		    .attr('text-anchor', 'middle')
 		    .attr('id', 'legend_text')
 		    .attr('font-size', '10px');
-	    }
+	   }
+	   
+	 // Listen for when points are clicked
+	 scatter_g.selectAll('circle')
+	    .on('click', function(d)  {
+	        object_clicked = -1;
+	 });
 }
 
 function plot_it_b() 
 {
     var nick = all_data;
+   
 }
