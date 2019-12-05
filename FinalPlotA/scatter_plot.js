@@ -264,9 +264,28 @@ function plot_it() {
 
 	 // Listen for when points are clicked
 	 scatter_g.selectAll('circle')
-	    .on('click', function(d)  {
-            object_clicked = d.id;
-            objects_clicked.push(d.id); 
+         .on('click', function (d) {
+             object_clicked = d.id;
+
+             var is_classed = d3.select(this).classed('selected');
+             //var fill_color = is_classed ? colorSelector(d.id) : "gray"
+             //d3.select(this).attr('fill', fill_color).classed('selected', !is_classed);
+
+             if (is_classed) {
+                objects_clicked.pop(d.id);
+                d3.select(this).attr('fill', colorSelector(d.id))
+                     .classed('selected', !is_classed);
+             }
+             else {
+                objects_clicked.push(d.id);
+                d3.select(this).attr('fill', "gray")
+                     .classed('selected', !is_classed);
+             }
+
+            console.log(objects_clicked.length)
+            //for (var i = 0; i < objects_clicked.length; i++) {
+            //    console.log(objects_clicked[i]);
+            //}
 	        plot_it_b();
 	 });
 }
@@ -290,50 +309,53 @@ function plot_it_b()
     var maxY = -1000;
 
 
-    for(var i=0; i<all_data.length; i++)
-    {
+    for (var i = 0; i < all_data.length; i++) {
         // if no item is selected, show all items
-        if (object_clicked == -1) 
-        {
-            objects_clicked = []; 
+        if (objects_clicked.length == 0) {
+            objects_clicked = [];
             var currX = parseFloat(all_data[i]['ChangeErrorX']);
             var currY = parseFloat(all_data[i]['ChangeErrorY']);
             var obj =
             {
                 'x': currX,
                 'y': currY,
-                'color': colorSelector((i+1)%9)
+                'color': colorSelector((i + 1) % 9)
             };
             errorData.push(obj);
-        }
+        }    
         else // else show only that item in scatterplot 
         {
-            if (all_data[i][' ObjectId'] == (object_clicked - 1)) {
-                var currX = parseFloat(all_data[i]['ChangeErrorX']);
-                var currY = parseFloat(all_data[i]['ChangeErrorY']);
+            for (var j = 0; j < objects_clicked.length; j++) { // This is ugly, but js's .includes() wasn't working)
+                cur_obj = objects_clicked[j]-1;
+                if (cur_obj == all_data[i]['ObjectId']) {
 
-                // update min and max for X, if possible
-                if (currX > maxX)
-                    maxX = currX;
-                else if (currX < minX)
-                    minX = currX;
+                    //if (all_data[i][' ObjectId'] == (object_clicked - 1)) {
+                    var currX = parseFloat(all_data[i]['ChangeErrorX']);
+                    var currY = parseFloat(all_data[i]['ChangeErrorY']);
 
-                // update min and max for Y, if possible
-                if (currY > maxY)
-                    maxY = currY;
-                else if (currY < minY)
-                    minY = currY;
+                    // update min and max for X, if possible
+                    if (currX > maxX)
+                        maxX = currX;
+                    else if (currX < minX)
+                        minX = currX;
 
-                var obj =
-                {
-                    'x': currX,
-                    'y': currY,
-                    'color': colorSelector(object_clicked)
-                };
+                    // update min and max for Y, if possible
+                    if (currY > maxY)
+                        maxY = currY;
+                    else if (currY < minY)
+                        minY = currY;
 
-                errorData.push(obj);
-            }
-        }
+                    var obj =
+                    {
+                        'x': currX,
+                        'y': currY,
+                        'color': colorSelector(cur_obj+1)
+                    };
+
+                    errorData.push(obj);
+                } // end if 
+            } // end for
+        } // end else
     }
     
     // up/down scale (y-axis)
