@@ -1,6 +1,10 @@
 var object_clicked = -1;
 var firstTime = true;
 
+
+var svg2;
+var scatter_g2;
+
 function plot_it() {
     var svg_width = 2000; 
 
@@ -8,10 +12,10 @@ function plot_it() {
     var width = 960 - margin.left - margin.right,
         height = 600 - margin.top - margin.bottom;
 
-    var svg = d3.select("body").append("svg")
+    var svg = d3.select("body").append("svg").attr('id', 'top_svg')
         .attr("width",svg_width)
         .attr("height", height + margin.top + margin.bottom)
-        .append("g")
+        .append("g").attr('id', 'avg_scatter')
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     
     // scatter plot svg
@@ -253,7 +257,13 @@ function plot_it() {
 		    .attr('text-anchor', 'middle')
 		    .attr('id', 'legend_text')
 		    .attr('font-size', '10px');
-	   }
+    }
+
+    svg2 = d3.select("body").append("svg").attr('id', 'bot_svg')
+        .attr("width", 2000)
+        .attr("height", 600)
+        .append("g").attr('id', 'all_scatter')
+        .attr("transform", "translate(" + 20 + "," + 10 + ")");
 	   
 	 // Listen for when points are clicked
 	 scatter_g.selectAll('circle')
@@ -262,10 +272,6 @@ function plot_it() {
 	        plot_it_b();
 	 });
 }
-
-
-var svg2;
-var scatter_g2;
 
 function plot_it_b() 
 {
@@ -299,12 +305,7 @@ function plot_it_b()
     
     if(firstTime)
     {
-        svg2 = d3.select("body").append("svg")
-            .attr("width", 2000)
-            .attr("height", 2000)
-            .append("g")
-            .attr("transform", "translate(" + 20 + "," + 10 + ")");
-        
+        svg2 = d3.select("body").select("#bot_svg");        
         scatter_g2 = svg2.append("g")
             .attr("transform", "translate(" + 150 + "," + 450 + ")");
     }

@@ -38,36 +38,10 @@ function getOuterRadius(index) {
 }
 
 
-function plot_it2() {
-    var scatter_dimensions = 530;
-    var another_top_padding = 50;
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    var svg = d3.select("body").select("svg");
-    var polar_g = svg.append("g")
-        .attr("transform", "translate(" + (scatter_dimensions + width / 2) + "," + (another_top_padding + height / 2) + ")");
-
-    var fullCircle = 360; // 2 * Math.PI; // 360 degrees in radians 
-    var circle_radians = [0, 6.28319];
-    var some_data = [3.14159, 4.71239, 0, 1.5708] // not the best method but it works?
-    var some_data2 = [0, 0.785398, 1.5708, 2.35619, 3.14159, 3.92699, 4.71239, 5.49779] // not the best method but it works?
-    var some_data_deg = [0, 45, 90, 135, 180, 225, 270, 315]
-
-    var innerRadius = 100,
-        outerRadius = Math.min(width, height) / 2 - 6;
-
-    console.log("Update 12");
-
-    var err_scale = d3.scaleLinear()
-        .domain([0.0, 360]) 
-        .range([0.0, 2 * Math.PI]);
-
-    let arc = d3.arc()
-        .innerRadius((d, i) => getInnerRadius(i))
-        .outerRadius((d, i) => getOuterRadius(i))
-        .startAngle(0)
-        .endAngle((d, i) => err_scale(d))
-
-    // RADIAL AXIS
+// RADIAL AXIS
+function plotRadialAxis(polar_g) {
     let radialAxis = polar_g.append('g')
         .attr('class', 'r axis')
         .selectAll('g')
@@ -93,10 +67,12 @@ function plot_it2() {
             return ""; //d.Object
         });
         //.text(d => d.MeanErrY);
+}
 
-    // AXIAL AXIS 
-    
-    let axialAxis = polar_g.append('g') 
+
+// AXIAL AXIS
+function plotAxialAxis(polar_g, err_scale) {
+    let axialAxis = polar_g.append('g')
         .attr('class', 'a axis')
         .selectAll('g')
         .data(some_data_deg2)
@@ -115,10 +91,11 @@ function plot_it2() {
         .style("fill", "rgba(100,100,100, 0.9)")
         .style('text-anchor', d => (err_scale(d) >= PI && err_scale(d) < 2 * PI ? 'end' : null))
         .attr('transform', d => 'rotate(' + (90 - rad2deg(err_scale(d))) + ',' + (chartRadius + 20) + ',0)')
-        .text(d => d +  String.fromCharCode(176));
+        .text(d => d + String.fromCharCode(176));
+}
 
-
-    // CHART TITLE
+// POLAR CHART TITLE
+function plotCenterTitle(polar_g) {
     var title = polar_g.append("g")
         .attr("class", "title")
         .append("text")
@@ -131,7 +108,9 @@ function plot_it2() {
         .attr("text-anchor", "middle")
         .attr("opacity", 0.6)
         .text("Left / Right");
+}
 
+function plotData(polar_g, arc) {
     //DATA ARCS    
     let arcs = polar_g.append('g')
         .attr('class', 'data')
@@ -139,17 +118,57 @@ function plot_it2() {
         .data(spatial_data_mod)
         .enter().append('path')
         .attr('class', 'arc')
-        .style('fill', (d) => colors[d.ObjectIndex-1]);
-    
+        .style('fill', (d) => colors[d.ObjectIndex - 1]);
+
     arcs.transition()
         .delay((d, i) => i * 200)
         .duration(1000)
         .attrTween('d', arcTween);
-        
-    
-    function arcTween(d, i) {        
+
+
+    function arcTween(d, i) {
         let interpolate = d3.interpolate(0, d.MeanErrY);
         return t => arc(interpolate(t), i);
     }
-    
+}
+
+function plotRelativeErr(polar_g, err_scale, arc) {
+    plotRadialAxis(polar_g);
+    plotAxialAxis(polar_g, err_scale);
+    plotCenterTitle(polar_g); 
+    plotData(polar_g, arc); 
+}
+
+
+function plot_it2() {
+    var scatter_dimensions = 530;
+    var another_top_padding = 50;
+
+    // plot for x axis error (up/down)
+    var polar_gX = d3.select('body').select('#bot_svg').append("g")
+        .attr('id', 'avg_polarX') // up + down err
+        .attr("transform", "translate(" + (scatter_dimensions + width / 2) + "," + (another_top_padding + height / 2) + ")");
+
+    // plot for y axis error (left/right)
+    var polar_gY = d3.select('body').select('#top_svg').append("g")
+        .attr('id', 'avg_polarY') //svg.append("g") // left + right err
+        .attr("transform", "translate(" + (scatter_dimensions + width / 2) + "," + (another_top_padding + height / 2) + ")");
+
+
+    console.log("Update 16");
+
+    var err_scale = d3.scaleLinear()
+        .domain([0.0, 360]) 
+        .range([0.0, 2 * Math.PI]);
+
+    let arc = d3.arc()
+        .innerRadius((d, i) => getInnerRadius(i))
+        .outerRadius((d, i) => getOuterRadius(i))
+        .startAngle(0)
+        .endAngle((d, i) => err_scale(d))
+
+    plotRelativeErr(polar_gY, err_scale, arc); 
+    plotRelativeErr(polar_gX, err_scale, arc); 
+
+
 }
