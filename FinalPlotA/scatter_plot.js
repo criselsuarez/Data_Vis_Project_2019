@@ -265,21 +265,24 @@ function plot_it() {
 	 // Listen for when points are clicked
 	 scatter_g.selectAll('circle')
          .on('click', function (d) {
-             object_clicked = d.id;
-
+             object_clicked = d.id;            
              var is_classed = d3.select(this).classed('selected');
-             //var fill_color = is_classed ? colorSelector(d.id) : "gray"
-             //d3.select(this).attr('fill', fill_color).classed('selected', !is_classed);
 
              if (is_classed) {
                 objects_clicked.pop(d.id);
-                d3.select(this).attr('fill', colorSelector(d.id))
-                     .classed('selected', !is_classed);
+                 d3.select(this)
+                    .attr('fill', colorSelector(d.id))
+                     .classed('selected', !is_classed)
+                     .style("stroke-width", 0)
+                    .style("stroke", "transparent");
              }
              else {
                 objects_clicked.push(d.id);
-                d3.select(this).attr('fill', "gray")
-                     .classed('selected', !is_classed);
+                 d3.select(this)
+                    .attr('fill', "transparent")
+                     .classed('selected', !is_classed)
+                     .style("stroke-width", 5)
+                     .style("stroke", colorSelector(d.id));
              }
 
             console.log(objects_clicked.length)
@@ -325,7 +328,7 @@ function plot_it_b()
         }    
         else // else show only that item in scatterplot 
         {
-            for (var j = 0; j < objects_clicked.length; j++) { // This is ugly, but js's .includes() wasn't working)
+            for (var j = 0; j < objects_clicked.length; j++) { // This is ugly, but js's .includes() wasn't working) :C
                 cur_obj = objects_clicked[j]-1;
                 if (cur_obj == all_data[i]['ObjectId']) {
 
@@ -373,7 +376,7 @@ function plot_it_b()
     if(firstTime)
     {
         // Display Title
-        scatter_g2.append('text').text('Raw Data for Selected Object')
+        scatter_g2.append('text').text('All Errors for Selected Object(s)')
 		.attr('transform', 'translate('+(graph_width/2)+','+(-graph_height-20)+')').attr('text-anchor', 'middle').attr('id', 'title').attr('font-size', '20px');
     
         // Displaying scales (enter)
