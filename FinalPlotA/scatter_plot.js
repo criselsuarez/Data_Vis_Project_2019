@@ -302,7 +302,7 @@ function plot_it_b()
             {
                 'x': currX,
                 'y': currY,
-                'color': colorSelector(object_clicked)
+                'color': colorSelector((i+1)%9)
             };
             errorData.push(obj);
         }
@@ -443,14 +443,8 @@ function plot_it_b()
 	
 	// Display the scatter points
     scatter_g2.selectAll('circle').data(errorData).enter().append('circle')
-        .attr('cx', function (d) {
-            var liu = d.x-0.000001;
-            var nick = lr_err_scale(d.x);
-            return lr_err_scale(d.x);
-        })
-        .attr('cy', function (d) { 
-            return ud_err_scale(d.y)-graph_height;
-        })
+        .attr('cx', function (d) {  return lr_err_scale(d.x);  })
+        .attr('cy', function (d) {  return ud_err_scale(d.y)-graph_height;  })
         .attr('r', 0)
         .attr('fill', function (d) {
             //console.log(d.color); 
