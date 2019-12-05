@@ -1,9 +1,55 @@
 var object_clicked = -1;
+var objects_clicked = []; 
 var firstTime = true;
 
 
 //var svg2;
 var scatter_g2;
+
+// Function for selecting colors 
+var colorSelector = function (x) {
+    if (x == 1)
+        return d3.hsl(0, 1, 0.5, 0.33);
+    else if (x == 2)
+        return d3.hsl(35, 1, 0.5, 0.33);
+    else if (x == 3)
+        return d3.hsl(75, 1, 0.5, 0.33);
+    else if (x == 4)
+        return d3.hsl(120, 1, 0.5, 0.33);
+    else if (x == 5)
+        return d3.hsl(175, 1, 0.5, 0.33);
+    else if (x == 6)
+        return d3.hsl(240, 1, 0.5, 0.33);
+    else if (x == 7)
+        return d3.hsl(280, 1, 0.5, 0.33);
+    else if (x == 8)
+        return d3.hsl(315, 1, 0.5, 0.33);
+    else
+        return d3.hsl(0, 1, 0, 0.33);
+}
+
+// Function for selecting text
+var textSelector = function (x) {
+    if (x == 1)
+        return 'Wall Light';
+    else if (x == 2)
+        return 'Chandelier';
+    else if (x == 3)
+        return 'Paint Can';
+    else if (x == 4)
+        return 'Sock';
+    else if (x == 5)
+        return 'Clock';
+    else if (x == 6)
+        return 'Books';
+    else if (x == 7)
+        return 'Plant';
+    else if (x == 8)
+        return 'Vase';
+    else
+        return 'Basketball';
+}
+
 
 function plot_it() {
     var svg_width = 1300; //650; //2000; 
@@ -53,7 +99,8 @@ function plot_it() {
         {
             'id': i,
             'y': spatial_data[0]['Stim'+i+'_ErrX_Average'],
-            'x': spatial_data[0]['Stim'+i+'_ErrY_Average']
+            'x': spatial_data[0]['Stim' + i + '_ErrY_Average'],
+            'color': colorSelector(i)
         };
         
         errorData.push(obj);
@@ -89,29 +136,7 @@ function plot_it() {
     // Display Title
     scatter_g.append('text').text('Spatial Error in VR')
 		.attr('transform', 'translate('+(graph_width/2)+','+(-graph_height-20)+')').attr('text-anchor', 'middle').attr('id', 'title').attr('font-size', '20px');
-		
-    // Function for selecting colors 
-    var colorSelector = function(x)
-        {
-            if(x == 1)
-                return d3.hsl(0, 1, 0.5, 0.33);
-            else if(x == 2)
-                return d3.hsl(35, 1, 0.5, 0.33);
-            else if(x == 3)
-                return d3.hsl(75, 1, 0.5, 0.33);
-            else if(x == 4)
-                return d3.hsl(120, 1, 0.5, 0.33);
-            else if(x == 5)
-                return d3.hsl(175, 1, 0.5, 0.33);
-            else if(x == 6)
-                return d3.hsl(240, 1, 0.5, 0.33);
-            else if(x == 7)
-                return d3.hsl(280, 1, 0.5, 0.33);
-            else if(x == 8)
-                return d3.hsl(315, 1, 0.5, 0.33);
-            else
-                return d3.hsl(0, 1, 0, 0.33);
-        }
+		    
     
     // Display the scatter points
     scatter_g.selectAll('circle').data(errorData).enter().append('circle')
@@ -207,30 +232,7 @@ function plot_it() {
             // remove line
             scatter_g.selectAll('#lineGraph').data([]).exit().remove();
         });
-        
-	   // Function for selecting text
-       var textSelector = function(x)
-        {
-            if(x == 1)
-                return 'Wall Light';
-            else if(x == 2)
-                return 'Chandelier';
-            else if(x == 3)
-                return 'Paint Can';
-            else if(x == 4)
-                return 'Sock';
-            else if(x == 5)
-                return 'Clock';
-            else if(x == 6)
-                return 'Books';
-            else if(x == 7)
-                return 'Plant';
-            else if(x == 8)
-                return 'Vase';
-            else
-                return 'Basketball';
-        }
-      
+        	         
       
       // POPULATE LEGEND       
       var colorIndex = [1,2,3,4,5,6,7,8,9];
@@ -263,7 +265,8 @@ function plot_it() {
 	 // Listen for when points are clicked
 	 scatter_g.selectAll('circle')
 	    .on('click', function(d)  {
-	        object_clicked = d.id;
+            object_clicked = d.id;
+            objects_clicked.push(d.id); 
 	        plot_it_b();
 	 });
 }
@@ -274,30 +277,7 @@ function plot_it_b()
     var lineGenerator = d3.line()
         .x(function(d, i) { return d[0] })
         .y(function(d, i) { return d[1] });
-        
-    // Function for selecting colors
-    var colorSelector = function(x)
-        {
-            if(x == 1)
-                return d3.hsl(0, 1, 0.5, 0.33);
-            else if(x == 2)
-                return d3.hsl(35, 1, 0.5, 0.33);
-            else if(x == 3)
-                return d3.hsl(75, 1, 0.5, 0.33);
-            else if(x == 4)
-                return d3.hsl(120, 1, 0.5, 0.33);
-            else if(x == 5)
-                return d3.hsl(175, 1, 0.5, 0.33);
-            else if(x == 6)
-                return d3.hsl(240, 1, 0.5, 0.33);
-            else if(x == 7)
-                return d3.hsl(280, 1, 0.5, 0.33);
-            else if(x == 8)
-                return d3.hsl(315, 1, 0.5, 0.33);
-            else
-                return d3.hsl(0, 1, 0, 0.33);
-        }
-    
+                
 
     // Scatter plot dimensions
     var graph_width = 400;
@@ -308,32 +288,51 @@ function plot_it_b()
     var maxX = -1000;
     var minY = 1000;
     var maxY = -1000;
+
+
     for(var i=0; i<all_data.length; i++)
     {
-        if(all_data[i][' ObjectId'] == (object_clicked-1))
+        // if no item is selected, show all items
+        if (object_clicked == -1) 
         {
+            objects_clicked = []; 
             var currX = parseFloat(all_data[i]['ChangeErrorX']);
             var currY = parseFloat(all_data[i]['ChangeErrorY']);
-        
-            // update min and max for X, if possible
-            if(currX > maxX)
-                maxX = currX;
-            else if(currX < minX)
-                minX = currX;
-                
-            // update min and max for Y, if possible
-            if(currY > maxY)
-                maxY = currY;
-            else if(currY < minY)
-                minY = currY;
-            
-            var obj = 
+            var obj =
             {
                 'x': currX,
-                'y': currY
+                'y': currY,
+                'color': colorSelector(object_clicked)
             };
-        
             errorData.push(obj);
+        }
+        else // else show only that item in scatterplot 
+        {
+            if (all_data[i][' ObjectId'] == (object_clicked - 1)) {
+                var currX = parseFloat(all_data[i]['ChangeErrorX']);
+                var currY = parseFloat(all_data[i]['ChangeErrorY']);
+
+                // update min and max for X, if possible
+                if (currX > maxX)
+                    maxX = currX;
+                else if (currX < minX)
+                    minX = currX;
+
+                // update min and max for Y, if possible
+                if (currY > maxY)
+                    maxY = currY;
+                else if (currY < minY)
+                    minY = currY;
+
+                var obj =
+                {
+                    'x': currX,
+                    'y': currY,
+                    'color': colorSelector(object_clicked)
+                };
+
+                errorData.push(obj);
+            }
         }
     }
     
@@ -453,7 +452,10 @@ function plot_it_b()
             return ud_err_scale(d.y)-graph_height;
         })
         .attr('r', 0)
-        .attr('fill', function (d) {return colorSelector(object_clicked)})
+        .attr('fill', function (d) {
+            //console.log(d.color); 
+            return d.color;
+        }) //colorSelector(object_clicked)})
         .attr('id', 'points')
         .transition().duration(1200)
         .attr('r', 7);
