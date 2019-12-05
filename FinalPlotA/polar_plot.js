@@ -141,9 +141,10 @@ function plotRelativeErr(polar_g, err_scale, arc) {
 
 
 function plot_it2() {
-    var scatter_dimensions = 530;
+    var scatter_dimensions = 450;
     var another_top_padding = 50;
 
+    /*
     // plot for x axis error (up/down)
     var polar_gX = d3.select('body').select('#bot_svg').append("g")
         .attr('id', 'avg_polarX') // up + down err
@@ -169,6 +170,6 @@ function plot_it2() {
 
     plotRelativeErr(polar_gY, err_scale, arc); 
     plotRelativeErr(polar_gX, err_scale, arc); 
-
+    */
 
 }

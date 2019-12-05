@@ -2,25 +2,30 @@ var object_clicked = -1;
 var firstTime = true;
 
 
-var svg2;
+//var svg2;
 var scatter_g2;
 
 function plot_it() {
-    var svg_width = 2000; 
+    var svg_width = 1300; //650; //2000; 
+    var svg_height = 550; //1200; //550;
 
-    var margin = { top: 20, right: 10, bottom: 20, left: 10 };
+    var margin = { top: 20, right: 10, bottom: 20, left: 60 };
     var width = 960 - margin.left - margin.right,
         height = 600 - margin.top - margin.bottom;
 
     var svg = d3.select("body").append("svg").attr('id', 'top_svg')
         .attr("width",svg_width)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g").attr('id', 'avg_scatter')
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        .attr("height", svg_height) //height + margin.top + margin.bottom)
     
-    // scatter plot svg
-    var scatter_g = svg.append("g")
-        .attr("transform", "translate(" + 150 + "," + 450 + ")");
+    // Position Major DOM Elements
+    var scatter_g = svg.append("g").attr('id', 'avg_scatter')
+        .attr("transform", "translate(" + (margin.left) + "," + (450 + margin.top) + ")");
+
+    scatter_g2 = svg.append("g").attr('id', 'all_scatter')
+        .attr("transform", "translate(" + (svg_width/2) + "," + (450 + margin.top) + ")");
+
+    var legend = svg.append("g").attr('class', 'legend')
+        .attr("transform", "translate(" + (500) + "," + (60) + ")");
    
     // Scatter plot dimensions
     var graph_width = 400;
@@ -85,7 +90,7 @@ function plot_it() {
     scatter_g.append('text').text('Spatial Error in VR')
 		.attr('transform', 'translate('+(graph_width/2)+','+(-graph_height-20)+')').attr('text-anchor', 'middle').attr('id', 'title').attr('font-size', '20px');
 		
-    // Function for selecting colors
+    // Function for selecting colors 
     var colorSelector = function(x)
         {
             if(x == 1)
@@ -227,12 +232,7 @@ function plot_it() {
         }
       
       
-      // CREATE LEGEND  
-      
-      // legend svg
-      var legend = svg.append("g")
-        .attr("transform", "translate(" + (650) + "," + (100) + ")");
-      
+      // POPULATE LEGEND       
       var colorIndex = [1,2,3,4,5,6,7,8,9];
       
       // Display the legend colors
@@ -259,12 +259,7 @@ function plot_it() {
 		    .attr('font-size', '10px');
     }
 
-    svg2 = d3.select("body").append("svg").attr('id', 'bot_svg')
-        .attr("width", 2000)
-        .attr("height", 600)
-        .append("g").attr('id', 'all_scatter')
-        .attr("transform", "translate(" + 20 + "," + 10 + ")");
-	   
+
 	 // Listen for when points are clicked
 	 scatter_g.selectAll('circle')
 	    .on('click', function(d)  {
@@ -303,12 +298,6 @@ function plot_it_b()
                 return d3.hsl(0, 1, 0, 0.33);
         }
     
-    if(firstTime)
-    {
-        svg2 = d3.select("body").select("#bot_svg");        
-        scatter_g2 = svg2.append("g")
-            .attr("transform", "translate(" + 150 + "," + 450 + ")");
-    }
 
     // Scatter plot dimensions
     var graph_width = 400;
@@ -323,8 +312,8 @@ function plot_it_b()
     {
         if(all_data[i][' ObjectId'] == (object_clicked-1))
         {
-            var currX = parseFloat(all_data[i][' ChangeErrorX']);
-            var currY = parseFloat(all_data[i][' ChangeErrorY']);
+            var currX = parseFloat(all_data[i]['ChangeErrorX']);
+            var currY = parseFloat(all_data[i]['ChangeErrorY']);
         
             // update min and max for X, if possible
             if(currX > maxX)
@@ -349,14 +338,16 @@ function plot_it_b()
     }
     
     // up/down scale (y-axis)
-    var ud_scale = d3.scaleLinear()
-        .domain([minY, maxY])
+    var ud_err_scale = d3.scaleLinear()
+        .domain([-360, 360])//([minY, maxY])
         .range([graph_height, 0]);
     
     // left/right scale (x-axis)
-    var lr_scale = d3.scaleLinear()
-        .domain([minX, maxX])
+    var lr_err_scale = d3.scaleLinear() 
+        .domain([-360, 360])
         .range([0, graph_width]);
+
+    
         
     if(firstTime)
     {
@@ -366,10 +357,10 @@ function plot_it_b()
     
         // Displaying scales (enter)
 	    scatter_g2.append('g').attr('transform', 'translate('+(0)+ ','+ (0)+')').attr('id', 'x_axis')
-	        .call(d3.axisBottom(lr_scale));
+            .call(d3.axisBottom(lr_err_scale));
     	
 	    scatter_g2.append('g').attr('transform', 'translate('+(0)+ ','+ (-graph_height)+')').attr('id', 'y_axis')
-	        .call(d3.axisLeft(ud_scale));
+            .call(d3.axisLeft(ud_err_scale));
 	    
 	    // Display axis label
         scatter_g2.append('text').text('Left/Right Error (in degrees)')
@@ -377,42 +368,44 @@ function plot_it_b()
     		
         scatter_g2.append('text').text('Down/Up Error (in degrees)')
 		    .attr('transform', 'translate('+(-30)+','+(-graph_height/2)+') rotate(270)').attr('text-anchor', 'middle').attr('id', 'y_text');
-		
-		// Generate line for (0,0)
+
+        // Generate line for (0,0)
         scatter_g2.append('path')
             .attr('stroke-opacity', 0)
-            .attr('d', function() {
-	            var points = [];
-	            // add the origin
-	            points.push([lr_scale(0), 0]);
-	            // add the current point location
-	            points.push([lr_scale(0), -graph_height]);
-    			
-	            return lineGenerator(points);
+            .attr('d', function () {
+                var points = [];
+                // add the origin
+                points.push([lr_err_scale(0), 0]);
+                // add the current point location
+                points.push([lr_err_scale(0), -graph_height]);
+
+                return lineGenerator(points);
             })
             .attr('fill', 'None').attr('stroke', d3.hsl(0, 1, 0)).attr('stroke-width', 1.5).attr('stroke-opacity', 0.33).attr('id', 'y_origin_line');
-            
+
         scatter_g2.append('path')
             .attr('stroke-opacity', 0)
-            .attr('d', function() {
-	            var points = [];
-	            // add the origin
-	            points.push([0, ud_scale(0)-graph_height]);
-	            // add the current point location
-	            points.push([graph_width, ud_scale(0)-graph_height]);
-    			
-	            return lineGenerator(points);
+            .attr('d', function () {
+                var points = [];
+                // add the origin
+                points.push([0, ud_err_scale(0) - graph_height]);
+                // add the current point location
+                points.push([graph_width, ud_err_scale(0) - graph_height]);
+
+                return lineGenerator(points);
             })
             .attr('fill', 'None').attr('stroke', d3.hsl(0, 1, 0)).attr('stroke-width', 1.5).attr('stroke-opacity', 0.33).attr('id', 'x_origin_line');
+
+
 	}
 	else
 	{   
 	    // Displaying scales (update)
 	    scatter_g2.selectAll('#x_axis').attr('transform', 'translate('+(0)+ ','+ (0)+')').attr('id', 'x_axis')
-	        .call(d3.axisBottom(lr_scale));
+            .call(d3.axisBottom(lr_err_scale));
     	
 	    scatter_g2.selectAll('#y_axis').attr('transform', 'translate('+(0)+ ','+ (-graph_height)+')').attr('id', 'y_axis')
-	        .call(d3.axisLeft(ud_scale));
+            .call(d3.axisLeft(ud_err_scale));
 	        
 	    // Generate line for (0,0)
         scatter_g2.selectAll('#y_origin_line')
@@ -420,14 +413,14 @@ function plot_it_b()
             .attr('d', function() {
 	            var points = [];
 	            // add the origin
-	            points.push([lr_scale(0), 0]);
+                points.push([lr_err_scale(0), 0]);
 	            // add the current point location
-	            points.push([lr_scale(0), -graph_height]);
+                points.push([lr_err_scale(0), -graph_height]);
     			
 	            return lineGenerator(points);
             })
             .attr('fill', 'None').attr('stroke', d3.hsl(0, 1, 0)).attr('stroke-width', 0).attr('stroke-opacity', 0.33).attr('id', 'y_origin_line')
-            .transition().duration(1200)
+            //.transition().duration(1200)
             .attr('stroke-width', 1.5);
             
         scatter_g2.selectAll('#x_origin_line')
@@ -435,14 +428,14 @@ function plot_it_b()
             .attr('d', function() {
 	            var points = [];
 	            // add the origin
-	            points.push([0, ud_scale(0)-graph_height]);
+                points.push([0, ud_err_scale(0)-graph_height]);
 	            // add the current point location
-	            points.push([graph_width, ud_scale(0)-graph_height]);
+                points.push([graph_width, ud_err_scale(0)-graph_height]);
     			
 	            return lineGenerator(points);
             })
             .attr('fill', 'None').attr('stroke', d3.hsl(0, 1, 0)).attr('stroke-width', 0).attr('stroke-opacity', 0.33).attr('id', 'x_origin_line')
-            .transition().duration(1200)
+            //.transition().duration(1200)
             .attr('stroke-width', 1.5);
 	}
     
@@ -453,11 +446,11 @@ function plot_it_b()
     scatter_g2.selectAll('circle').data(errorData).enter().append('circle')
         .attr('cx', function (d) {
             var liu = d.x-0.000001;
-            var nick = lr_scale(d.x);
-            return lr_scale(d.x);
+            var nick = lr_err_scale(d.x);
+            return lr_err_scale(d.x);
         })
         .attr('cy', function (d) { 
-            return ud_scale(d.y)-graph_height;
+            return ud_err_scale(d.y)-graph_height;
         })
         .attr('r', 0)
         .attr('fill', function (d) {return colorSelector(object_clicked)})
@@ -478,10 +471,10 @@ function plot_it_b()
 		    var result = Math.sqrt(x_squared + y_squared).toFixed(2);
 		    
 		    scatter_g2.append('text').text('('+x_rounded+', '+y_rounded+')')
-		        .attr('transform', 'translate('+(lr_scale(d.x))+','+(ud_scale(d.y)-graph_height-25)+')').attr('text-anchor', 'middle').attr('id', 'hoverText1').attr('font-size', '12px');
+                .attr('transform', 'translate(' + (lr_err_scale(d.x)) + ',' + (ud_err_scale(d.y)-graph_height-25)+')').attr('text-anchor', 'middle').attr('id', 'hoverText1').attr('font-size', '12px');
 		    
 		    scatter_g2.append('text').text('Length: '+result)
-		        .attr('transform', 'translate('+(lr_scale(d.x))+','+(ud_scale(d.y)-graph_height-10)+')').attr('text-anchor', 'middle').attr('id', 'hoverText2').attr('font-size', '12px');
+                .attr('transform', 'translate(' + (lr_err_scale(d.x)) + ',' + (ud_err_scale(d.y)-graph_height-10)+')').attr('text-anchor', 'middle').attr('id', 'hoverText2').attr('font-size', '12px');
 		   
 		   // Display the lines
 	       scatter_g2.append('path')
@@ -489,9 +482,9 @@ function plot_it_b()
 		        .attr('d', function() {
 			        var points = [];
 			        // add the origin
-			        points.push([lr_scale(0), ud_scale(0)-graph_height]);
+                    points.push([lr_err_scale(0), ud_err_scale(0)-graph_height]);
 			        // add the current point location
-			        points.push([lr_scale(d.x), ud_scale(d.y)-graph_height]);
+                    points.push([lr_err_scale(d.x), ud_err_scale(d.y)-graph_height]);
         			
 			        return lineGenerator(points);
 		        })
