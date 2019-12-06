@@ -68,10 +68,10 @@ function plot_it() {
         .attr("transform", "translate(" + (margin.left) + "," + (450 + margin.top) + ")");
 
     scatter_g2 = svg.append("g").attr('id', 'all_scatter')
-        .attr("transform", "translate(" + (svg_width/2) + "," + (450 + margin.top) + ")");
+        .attr("transform", "translate(" + (svg_width/2 - 20) + "," + (450 + margin.top) + ")");
 
     var legend = svg.append("g").attr('class', 'legend')
-        .attr("transform", "translate(" + (500) + "," + (60) + ")");
+        .attr("transform", "translate(" + (480) + "," + (60) + ")");
    
     // Scatter plot dimensions
     var graph_width = 400;
@@ -134,7 +134,7 @@ function plot_it() {
 		.attr('transform', 'translate('+(-30)+','+(-graph_height/2)+') rotate(270)').attr('text-anchor', 'middle').attr('id', 'y_text');
     
     // Display Title
-    scatter_g.append('text').text('Spatial Error in VR')
+    scatter_g.append('text').text('Average Turning Error')
 		.attr('transform', 'translate('+(graph_width/2)+','+(-graph_height-20)+')').attr('text-anchor', 'middle').attr('id', 'title').attr('font-size', '20px');
 		    
     
@@ -376,7 +376,7 @@ function plot_it_b()
     if(firstTime)
     {
         // Display Title
-        scatter_g2.append('text').text('All Errors for Selected Object(s)')
+        scatter_g2.append('text').text('Turning Errors for Selected Object(s)')
 		.attr('transform', 'translate('+(graph_width/2)+','+(-graph_height-20)+')').attr('text-anchor', 'middle').attr('id', 'title').attr('font-size', '20px');
     
         // Displaying scales (enter)
@@ -391,7 +391,7 @@ function plot_it_b()
 		    .attr('transform', 'translate('+(graph_width/2)+','+(35)+')').attr('text-anchor', 'middle').attr('id', 'x_text');
     		
         scatter_g2.append('text').text('Down/Up Error (in degrees)')
-		    .attr('transform', 'translate('+(-30)+','+(-graph_height/2)+') rotate(270)').attr('text-anchor', 'middle').attr('id', 'y_text');
+		    .attr('transform', 'translate('+(-35)+','+(-graph_height/2)+') rotate(270)').attr('text-anchor', 'middle').attr('id', 'y_text');
 
         // Generate line for (0,0)
         scatter_g2.append('path')
