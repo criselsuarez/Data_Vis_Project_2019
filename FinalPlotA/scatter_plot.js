@@ -509,7 +509,7 @@ function plot_it_b()
         			
 			        return lineGenerator(points);
 		        })
-		        .attr('fill', 'None').attr('stroke', function () {return colorSelector(d.id)}).attr('stroke-width', 2).attr('stroke-opacity', 0.5).attr('id', 'lineGraph');
+		        .attr('fill', 'None').attr('stroke', d.color).attr('stroke-width', 2).attr('stroke-opacity', 0.5).attr('id', 'lineGraph');
 	    }); 
 	    
 	  // Listen for when points are unhovered
