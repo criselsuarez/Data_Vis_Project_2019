@@ -121,7 +121,7 @@ function plot_it() {
     var lr_scale = d3.scaleLinear()
         .domain([d3.min(Y_Error)-5, d3.max(Y_Error)])
         .range([0, graph_width]);
-        
+
     
     // Displaying scales
 	scatter_g.append('g').attr('transform', 'translate('+(0)+ ','+ (0)+')').attr('id', 'x_axis')
@@ -316,6 +316,16 @@ function plot_it_b()
     var minY = 1000;
     var maxY = -1000;
 
+    // up/down scale (y-axis)
+    var ud_err_scale = d3.scaleLinear()
+        .domain([-360, 360])//([minY, maxY])
+        .range([graph_height, 0]);
+
+    // left/right scale (x-axis)
+    var lr_err_scale = d3.scaleLinear()
+        .domain([-360, 360])
+        .range([0, graph_width]);
+
 
     for (var i = 0; i < all_data.length; i++) {
         // if no item is selected, show all items
@@ -333,9 +343,10 @@ function plot_it_b()
         }    
         else // else show only that item in scatterplot 
         {
-            for (var j = 0; j < objects_clicked.length; j++) { // This is ugly, but js's .includes() wasn't working) :C
-                cur_obj = objects_clicked[j]-1;
-                if (cur_obj == all_data[i]['ObjectId']) {
+            //for (var j = 0; j < objects_clicked.length; j++) { // This is ugly, but js's .includes() wasn't working) :C
+            //cur_obj = objects_clicked[j]-1;
+            var obj_id = parseInt(all_data[i]['ObjectId']);
+            if (selected_objects[obj_id]) {
                     var currX = parseFloat(all_data[i]['ChangeErrorX']);
                     var currY = parseFloat(all_data[i]['ChangeErrorY']);
 
@@ -355,25 +366,15 @@ function plot_it_b()
                     {
                         'x': currX,
                         'y': currY,
-                        'color': colorSelector(cur_obj+1)
+                        'color': colorSelector(obj_id+1)
                     };
 
                     errorData.push(obj);
                 } // end if 
-            } // end for
+            //} // end for
         } // end else
     }
     
-    // up/down scale (y-axis)
-    var ud_err_scale = d3.scaleLinear()
-        .domain([-360, 360])//([minY, maxY])
-        .range([graph_height, 0]);
-    
-    // left/right scale (x-axis)
-    var lr_err_scale = d3.scaleLinear() 
-        .domain([-360, 360])
-        .range([0, graph_width]);
-
     
         
     if(firstTime)
@@ -469,8 +470,8 @@ function plot_it_b()
 	
 	// Display the scatter points
     scatter_g2.selectAll('circle').data(errorData).enter().append('circle')
-        .attr('cx', function (d) {  return lr_err_scale(d.x);  })
-        .attr('cy', function (d) {  return ud_err_scale(d.y)-graph_height;  })
+        .attr('cx', function (d) { return lr_err_scale(d.y);  })   // for some reason this plot is flipped 
+        .attr('cy', function (d) { return ud_err_scale(d.x) - graph_height; }) 
         .attr('r', 0)
         .attr('fill', function (d) {  return d.color; }) 
         .attr('id', 'points')
