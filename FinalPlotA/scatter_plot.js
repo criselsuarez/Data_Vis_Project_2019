@@ -1,5 +1,6 @@
-var object_clicked = -1;
+
 var objects_clicked = []; 
+var selected_objects = new Array(9); // a bool array of selected targets
 var firstTime = true;
 
 
@@ -52,6 +53,9 @@ var textSelector = function (x) {
 
 
 function plot_it() {
+    console.log("Update 08");
+
+
     var svg_width = 1300; //650; //2000; 
     var svg_height = 550; //1200; //550;
 
@@ -246,7 +250,7 @@ function plot_it() {
             return 25 * d;
         })
         .attr('r', function (d) { return 7 })
-        .attr('fill', function (d) {return colorSelector(d)})
+        .attr('fill', function (d) { return colorSelector(d); })
         .attr('id', 'legend_points');
        
        // For Objects 1-9
@@ -260,15 +264,17 @@ function plot_it() {
 		    .attr('id', 'legend_text')
 		    .attr('font-size', '10px');
     }
+    update_selected_objects(); 
+    updateLegend(legend); 
 
 
 	 // Listen for when points are clicked
 	 scatter_g.selectAll('circle')
          .on('click', function (d) {
-             object_clicked = d.id;            
              var is_classed = d3.select(this).classed('selected');
 
              if (is_classed) {
+                selected_objects[d.id-1] = false; 
                 objects_clicked.pop(d.id);
                  d3.select(this)
                     .attr('fill', colorSelector(d.id))
@@ -277,6 +283,7 @@ function plot_it() {
                     .style("stroke", "transparent");
              }
              else {
+                 selected_objects[d.id-1] = true; 
                 objects_clicked.push(d.id);
                  d3.select(this)
                     .attr('fill', "transparent")
@@ -284,12 +291,10 @@ function plot_it() {
                      .style("stroke-width", 5)
                      .style("stroke", colorSelector(d.id));
              }
+            update_selected_objects();
+            plot_it_b();
+            updateLegend(legend)
 
-            console.log(objects_clicked.length)
-            //for (var i = 0; i < objects_clicked.length; i++) {
-            //    console.log(objects_clicked[i]);
-            //}
-	        plot_it_b();
 	 });
 }
 
@@ -331,8 +336,6 @@ function plot_it_b()
             for (var j = 0; j < objects_clicked.length; j++) { // This is ugly, but js's .includes() wasn't working) :C
                 cur_obj = objects_clicked[j]-1;
                 if (cur_obj == all_data[i]['ObjectId']) {
-
-                    //if (all_data[i][' ObjectId'] == (object_clicked - 1)) {
                     var currX = parseFloat(all_data[i]['ChangeErrorX']);
                     var currY = parseFloat(all_data[i]['ChangeErrorY']);
 
@@ -444,7 +447,6 @@ function plot_it_b()
 	            return lineGenerator(points);
             })
             .attr('fill', 'None').attr('stroke', d3.hsl(0, 1, 0)).attr('stroke-width', 0).attr('stroke-opacity', 0.33).attr('id', 'y_origin_line')
-            //.transition().duration(1200)
             .attr('stroke-width', 1.5);
             
         scatter_g2.selectAll('#x_origin_line')
@@ -459,7 +461,6 @@ function plot_it_b()
 	            return lineGenerator(points);
             })
             .attr('fill', 'None').attr('stroke', d3.hsl(0, 1, 0)).attr('stroke-width', 0).attr('stroke-opacity', 0.33).attr('id', 'x_origin_line')
-            //.transition().duration(1200)
             .attr('stroke-width', 1.5);
 	}
     
@@ -471,10 +472,7 @@ function plot_it_b()
         .attr('cx', function (d) {  return lr_err_scale(d.x);  })
         .attr('cy', function (d) {  return ud_err_scale(d.y)-graph_height;  })
         .attr('r', 0)
-        .attr('fill', function (d) {
-            //console.log(d.color); 
-            return d.color;
-        }) //colorSelector(object_clicked)})
+        .attr('fill', function (d) {  return d.color; }) 
         .attr('id', 'points')
         .transition().duration(1200)
         .attr('r', 7);
@@ -525,4 +523,50 @@ function plot_it_b()
         });
     
     firstTime = false;
+}
+
+
+// selected_objects is used to toggle the appearance of elements during interactions
+// if no objects are clicked -> set all values to false in selected_objects array
+// else -> for each object that is selected, set its index in selected_objects to true
+function update_selected_objects() {    
+    if (objects_clicked.length == 0) {
+        for (var i = 0; i < selected_objects.length; i++) {
+            selected_objects[i] = false; 
+        }
+    }
+    else {
+        for (var i = 0; i < objects_clicked.length; i++) {
+            console.log(objects_clicked[i]); 
+            if (objects_clicked.includes(i))
+                selected_objects[i] = true;
+            else
+                selected_objects[i] = false;
+        }
+    }
+
+} 
+
+// Display the legend colors 
+function updateLegend(legend) {
+
+    legend.selectAll('circle')     
+        .attr('fill', function (d) {
+            if (selected_objects[d-1])
+                return "transparent";
+            else
+                return colorSelector(d);
+        })
+        .style("stroke-width", function (d) {
+            if (selected_objects[d-1])
+                return 5;
+            else
+                return 0;
+        })
+        .style("stroke", function (d) {
+            if (selected_objects[d-1])
+                return colorSelector(d);
+            else
+                return "transparent";
+        })
 }
