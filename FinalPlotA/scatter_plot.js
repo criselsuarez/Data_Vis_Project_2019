@@ -56,7 +56,7 @@ function plot_it() {
     console.log("Update 08");
 
 
-    var svg_width = 1300; //650; //2000; 
+    var svg_width = 1600; //650; //2000; 
     var svg_height = 550; //1200; //550;
 
     var margin = { top: 20, right: 10, bottom: 20, left: 60 };
@@ -72,10 +72,13 @@ function plot_it() {
         .attr("transform", "translate(" + (margin.left) + "," + (450 + margin.top) + ")");
 
     scatter_g2 = svg.append("g").attr('id', 'all_scatter')
-        .attr("transform", "translate(" + (svg_width/2 - 20) + "," + (450 + margin.top) + ")");
+        .attr("transform", "translate(" + (svg_width / 2.6) + "," + (450 + margin.top) + ")");
+
+    var image_points_g = svg.append("g").attr('id', 'all_scatter')
+        .attr("transform", "translate(" + (svg_width / 1.55) + "," + ( margin.top) + ")");
 
     var legend = svg.append("g").attr('class', 'legend')
-        .attr("transform", "translate(" + (480) + "," + (60) + ")");
+        .attr("transform", "translate(" + (470) + "," + (60) + ")");
    
     // Scatter plot dimensions
     var graph_width = 400;
@@ -152,7 +155,7 @@ function plot_it() {
         .attr('r', 0)
         .attr('fill', function (d) {return colorSelector(d.id+1)})
         .attr('id', 'points')
-        .transition().duration(1200)
+        .transition().duration(1600)
         .attr('r', 7);
     
     // generates a line given an array [x, y]
@@ -173,7 +176,7 @@ function plot_it() {
 	        return lineGenerator(points);
         })
         .attr('fill', 'None').attr('stroke', d3.hsl(0, 1, 0)).attr('stroke-width', 0).attr('stroke-opacity', 0.33).attr('id', 'y_origin_line')
-        .transition().duration(1200)
+        .transition().duration(1600)
         .attr('stroke-width', 1.5);
         
     scatter_g.append('path')
@@ -188,7 +191,7 @@ function plot_it() {
 	        return lineGenerator(points);
         })
         .attr('fill', 'None').attr('stroke', d3.hsl(0, 1, 0)).attr('stroke-width', 0).attr('stroke-opacity', 0.33).attr('id', 'x_origin_line')
-        .transition().duration(1200)
+        .transition().duration(1600)
         .attr('stroke-width', 1.5);
 		
      // Listen for when points are hovered
@@ -263,9 +266,12 @@ function plot_it() {
 		    .attr('id', 'legend_text')
 		    .attr('font-size', '10px');
     }
-    update_selected_objects(); 
-    updateLegend(legend); 
 
+    DrawTargetCirclesOverImage(image_points_g, colorIndex);
+
+    UpdateSelectedObjects(); 
+    UpdateLegend(legend); 
+    UpdateTargetCirclesOverImage(image_points_g, colorIndex);
 
 	 // Listen for when scatterplot points are clicked 
 	 scatter_g.selectAll('circle')
@@ -289,9 +295,11 @@ function plot_it() {
                      .style("stroke-width", 5)
                      .style("stroke", colorSelector(id_val+1));
              }
-            update_selected_objects();
+            UpdateSelectedObjects();
             plot_it_b();
-            updateLegend(legend)
+            UpdateLegend(legend);
+            UpdateTargetCirclesOverImage(image_points_g, colorIndex);
+
 
         });
     // Listen for when scatterplot points are clicked
@@ -307,9 +315,10 @@ function plot_it() {
                     objects_clicked.push(i);
             }
             
-            update_selected_objects();
-            updateSelectedCircles(scatter_g);
-            updateLegend(legend)
+            UpdateSelectedObjects();
+            UpdateSelectedCircles(scatter_g);
+            UpdateLegend(legend)
+            UpdateTargetCirclesOverImage(image_points_g, colorIndex);
             plot_it_b();
             
         });
@@ -491,9 +500,9 @@ function plot_it_b()
         .attr('cx', function (d) { return lr_err_scale(d.y);  })   // for some reason this plot is flipped 
         .attr('cy', function (d) { return ud_err_scale(d.x) - graph_height; }) 
         .attr('r', 0)
-        .attr('fill', function (d) {  return d.color; }) 
+        .attr('fill', function (d) { return d.color; })
         .attr('id', 'points')
-        .transition().duration(1200)
+        .transition().duration(1600)
         .attr('r', 7);
         
      // Listen for when points are hovered
@@ -548,7 +557,7 @@ function plot_it_b()
 // selected_objects is used to toggle the appearance of elements during interactions
 // if no objects are clicked -> set all values to false in selected_objects array
 // else -> for each object that is selected, set its index in selected_objects to true
-function update_selected_objects() {  
+function UpdateSelectedObjects() {  
     //if (objects_clicked.length == 0) {
         for (var i = 0; i < selected_objects.length; i++) {
             selected_objects[i] = false;         
@@ -586,7 +595,7 @@ function update_selected_objects() {
 } 
 
 // Display the legend colors 
-function updateLegend(legend) {
+function UpdateLegend(legend) {
 
     legend.selectAll('circle')     
         .attr('fill', function (d) {
@@ -610,7 +619,7 @@ function updateLegend(legend) {
 }
 
 // Display the legend colors 
-function updateSelectedCircles(scatter_plot) {
+function UpdateSelectedCircles(scatter_plot) {
 
     scatter_plot.selectAll('circle')
         .attr('fill', function (d, i) {
@@ -631,4 +640,83 @@ function updateSelectedCircles(scatter_plot) {
             else
                 return "transparent";
         })
+}
+
+// Hah this is going to be sloppy, but making it pretty is not my priority rn
+// Function draws circles over where target objects are positioned in a PNG image
+function DrawTargetCirclesOverImage(image_g, colorIndex) {
+
+    image_g.selectAll('circle').data(colorIndex).enter().append('circle')
+        .attr('cx', function (d, i) {
+            return PickXPos(i);
+        })
+        .attr('cy', function (d, i) {
+            return PickYPos(i);
+        })
+        .attr('r', 20)
+        .attr('fill', "transparent") 
+        .attr('stroke', "transparent") 
+        .attr('stroke-width', 6)
+        .attr('id', 'image_points');
+}
+
+function UpdateTargetCirclesOverImage(image_g, colorIndex) {
+
+    image_g.selectAll('circle').transition()
+        .attr('stroke', function (d, i) {
+            if (selected_objects[i])
+                return colorSelector(i + 1);
+            else
+                return "transparent";
+        })
+        .duration(1200)
+        .attr('id', 'image_points');
+}
+
+// range 30 -> 400 [40, 350]
+function PickXPos(item_index) {
+    switch (item_index) {
+        case 0:
+            return 350;
+        case 1:
+            return 266; 
+        case 2:
+            return 190; 
+        case 3:
+            return 140;
+        case 4:
+            return 80; 
+        case 5:
+            return 75;
+        case 6:
+            return 113;
+        case 7:
+            return 176;
+        default:
+            return 248;
+    }
+}
+
+// range 30 -> 400 [40, 350]
+function PickYPos(item_index) {
+    switch (item_index) {
+        case 0:
+            return 290;
+        case 1:
+            return 122; // 
+        case 2:
+            return 335; 
+        case 3:
+            return 420; 
+        case 4:
+            return 235;
+        case 5:
+            return 270;
+        case 6:
+            return 480;
+        case 7:
+            return 70;
+        default:
+            return 163;
+    }
 }

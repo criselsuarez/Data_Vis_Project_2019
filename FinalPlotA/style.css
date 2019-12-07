@@ -7,8 +7,9 @@
 /* Container holding the image and the text */
 .img_container {
     position: absolute;
-    margin-left: 1100px;
+    margin-left: 1060px;
     margin-top: 65px;
+    z-index: -1;
 }
 
     .img_container img {
