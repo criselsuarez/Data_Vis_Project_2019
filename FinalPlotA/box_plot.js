@@ -118,32 +118,29 @@ function PlotWhiskers() {
 
 
     // the x-axis
-    var x = d3.scaleBand() //d3.scale.ordinal() // deprecated
-        .domain(data.map(function (d) { console.log(d); return d[0] }))
+    var x = d3.scaleBand() 
+        .domain(data.map(function (d) { return d[0] })) // console.log(d);
         .range([0, width], 0.7, 0.3)
         .paddingInner(0.75)
         .paddingOuter(0.5);
-    //.rangeRoundBands([0, width], 0.7, 0.3 // deprecated
 
-    var xAxis = d3.axisBottom() //d3.svg.axis()  
+    var xAxis = d3.axisBottom() 
         .scale(x);
-    //.orient("bottom");
 
     // the y-axis
     var y = d3.scaleLinear()
         .domain([min, max])
         .range([height + margin.top, 0 + margin.top]);
 
-    var yAxis = d3.axisLeft() //d3.svg.axis()
+    var yAxis = d3.axisLeft() 
         .scale(y);
-    //.orient("left");
 
     // draw the boxplots
     whisker_g.selectAll(".box")
         .data(data)
         .enter().append("g")
         .attr("transform", function (d) { return "translate(" + x(d[0]) + "," + margin.top + ")"; })
-        .call(chart.width(x.bandwidth())); //rangeBand()));
+        .call(chart.width(x.bandwidth())); 
 
 
     // add a title

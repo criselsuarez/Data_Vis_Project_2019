@@ -18,8 +18,9 @@ d3.box = function() {
 	  showLabels = true, // whether or not to show text labels
 	  numBars = 4,
 	  curBar = 1,
-      tickFormat = null;
+        tickFormat = null;
 
+    var color_index = 0;
   // For each small multiple…
   function box(g) {
     g.each(function(data, i) {
@@ -35,6 +36,7 @@ d3.box = function() {
           n = d.length,
           min = d[0],
           max = d[n - 1];
+          
 
       // Compute quartiles. Must return exactly 3 elements.
       var quartileData = d.quartiles = quartiles(d);
@@ -99,17 +101,26 @@ d3.box = function() {
           .attr("y2", function(d) { return x1(d[1]); })
           .remove();
 
+        var colors = [d3.hsl(0, 1, 0.5, 0.33), d3.hsl(35, 1, 0.5, 0.33), d3.hsl(75, 1, 0.5, 0.33),
+        d3.hsl(120, 1, 0.5, 0.33), d3.hsl(175, 1, 0.5, 0.33), d3.hsl(240, 1, 0.5, 0.33),
+        d3.hsl(280, 1, 0.5, 0.33), d3.hsl(315, 1, 0.5, 0.33), d3.hsl(0, 1, 0, 0.33)];
+
+
       // Update innerquartile box.
       var box = g.selectAll("rect.box")
-          .data([quartileData]);
+            .data([quartileData]);
 
-      box.enter().append("rect")
+        box.enter().append("rect")
           .attr("class", "box")
           .attr("x", 0)
           .attr("y", function(d) { return x0(d[2]); })
           .attr("width", width)
-          .attr("height", function(d) { return x0(d[0]) - x0(d[2]); })
-        .transition()
+          .attr("height", function (d) { return x0(d[0]) - x0(d[2]); })
+            .style("fill", function (d, i) {
+                console.log(color_index); 
+                return colors[color_index];
+            }) 
+          .transition()
           .duration(duration)
           .attr("y", function(d) { return x1(d[2]); })
           .attr("height", function(d) { return x1(d[0]) - x1(d[2]); });
@@ -119,6 +130,9 @@ d3.box = function() {
           .attr("y", function(d) { return x1(d[2]); })
           .attr("height", function(d) { return x1(d[0]) - x1(d[2]); });
 
+
+        console.log(color_index);
+        color_index += 1; 
       // Update median line.
       var medianLine = g.selectAll("line.median")
           .data([quartileData[1]]);
