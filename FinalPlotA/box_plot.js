@@ -17,15 +17,15 @@ function iqr(k) {
 }
 
 
-function PlotWhiskers() {
+function PlotWhiskers(axis_string) {
 
     // variable declarations 
     var labels = true; // show the text labels beside individual boxplots?
 
     var top_padding = 40;
-    var left_padding = 40;
+    var left_padding = 575;
     var margin = { top: 30, right: 50, bottom: 70, left: 50 };
-    var width = 800 - margin.left - margin.right;
+    var width = 900 - margin.left - margin.right;
     var height = 400 - margin.top - margin.bottom;
 
     var min = Infinity,
@@ -107,7 +107,7 @@ function PlotWhiskers() {
         .showLabels(labels);
 
     var svg = d3.select("body").append("svg")
-        .attr("transform", "translate(" + left_padding + "," + top_padding + ")")
+        .attr("transform", "translate(" + left_padding + "," + 10 + ")")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .attr("class", "box")
@@ -150,14 +150,14 @@ function PlotWhiskers() {
         .attr("text-anchor", "middle")
         .style("font-size", "18px")
         //.style("text-decoration", "underline")
-        .text("Angular Error of Different Objects in VR Study");
+        .text(axis_string + " Turning Error Quartiles");
 
     // draw y axis
     whisker_g.append("g")
         .attr("class", "y axis")
         .call(yAxis)
         .append("text") // and text1
-        .attr("transform", "translate(" +left_padding+"," + 0 + ")") 
+        .attr("transform", "translate(" +40+"," + 0 + ")") 
         .attr("transform", "rotate(-90)")
         .attr("y", 6)
         .attr("dy", ".71em")

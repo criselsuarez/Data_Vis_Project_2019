@@ -418,7 +418,7 @@ function PlotAllScatter()
     if(firstTime)
     {
         // Display Title
-        scatter_g2.append('text').text('Turning Errors for Selected Object(s)')
+        scatter_g2.append('text').text('Selected Turning Errors')
 		.attr('transform', 'translate('+(graph_width/2)+','+(-graph_height-20)+')').attr('text-anchor', 'middle').attr('id', 'title').attr('font-size', '20px');
     
         // Displaying scales (enter)
@@ -529,10 +529,10 @@ function PlotAllScatter()
 		    var result = Math.sqrt(x_squared + y_squared).toFixed(2);
 		    
 		    scatter_g2.append('text').text('('+x_rounded+', '+y_rounded+')')
-                .attr('transform', 'translate(' + (lr_err_scale(d.x)) + ',' + (ud_err_scale(d.y)-graph_height-25)+')').attr('text-anchor', 'middle').attr('id', 'hoverText1').attr('font-size', '12px');
+                .attr('transform', 'translate(' + (lr_err_scale(d.y)) + ',' + (ud_err_scale(d.x)-graph_height-25)+')').attr('text-anchor', 'middle').attr('id', 'hoverText1').attr('font-size', '12px');
 		    
 		    scatter_g2.append('text').text('Length: '+result)
-                .attr('transform', 'translate(' + (lr_err_scale(d.x)) + ',' + (ud_err_scale(d.y)-graph_height-10)+')').attr('text-anchor', 'middle').attr('id', 'hoverText2').attr('font-size', '12px');
+                .attr('transform', 'translate(' + (lr_err_scale(d.y)) + ',' + (ud_err_scale(d.x)-graph_height-10)+')').attr('text-anchor', 'middle').attr('id', 'hoverText2').attr('font-size', '12px');
 		   
 		   // Display the lines
 	       scatter_g2.append('path')
@@ -542,7 +542,7 @@ function PlotAllScatter()
 			        // add the origin
                     points.push([lr_err_scale(0), ud_err_scale(0)-graph_height]);
 			        // add the current point location
-                    points.push([lr_err_scale(d.x), ud_err_scale(d.y)-graph_height]);
+                    points.push([lr_err_scale(d.y), ud_err_scale(d.x)-graph_height]);
         			
 			        return lineGenerator(points);
 		        })

@@ -8,16 +8,19 @@ body {
     font: 10px sans-serif;
 }
     .box line,
-    .box rect,
     .box circle {
         fill: steelblue;
-        stroke: #000;
+        stroke: hsl(0, 0%, 18%); /* dark gray */
         stroke-width: 1px;
     }
-
-    .box .center {
-        stroke-dasharray: 3,3;
+    .box rect {
+        stroke-width: 0px; 
     }
+
+
+.box .center {
+    stroke-dasharray: 3,3;
+}
 
     .box .outlier {
         fill: none;

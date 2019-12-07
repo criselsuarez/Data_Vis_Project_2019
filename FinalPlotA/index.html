@@ -25,11 +25,16 @@
             PlotAllScatter();
         })
 
-        // box and whisker plots
+        // box and whisker plot Y axis
+        d3.csv('Data/all_change_error_y.csv', function (data) {
+            whisker_data = data;
+            PlotWhiskers("Left/Right");
+        })
+        // box and whisker plot X axis
         d3.csv('Data/all_change_error_x.csv', function (data) {
             whisker_data = data;
-            PlotWhiskers();
-    })
+            PlotWhiskers("Up/Down");
+        })
 
     /*d3.csv('spatial_memory_adult_avg_errs_abssort.csv', function (data) {
     spatial_data_mod = data;

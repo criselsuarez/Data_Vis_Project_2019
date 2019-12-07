@@ -29,9 +29,6 @@ d3.box = function() {
 	  //var boxIndex = 1;
 	  var d = data[1].sort(d3.ascending);
 
-	 // console.log(boxIndex);
-	  //console.log(d);
-
       var g = d3.select(this),
           n = d.length,
           min = d[0],
@@ -117,7 +114,6 @@ d3.box = function() {
           .attr("width", width)
           .attr("height", function (d) { return x0(d[0]) - x0(d[2]); })
             .style("fill", function (d, i) {
-                console.log(color_index); 
                 return colors[color_index];
             }) 
           .transition()
@@ -130,8 +126,6 @@ d3.box = function() {
           .attr("y", function(d) { return x1(d[2]); })
           .attr("height", function(d) { return x1(d[0]) - x1(d[2]); });
 
-
-        console.log(color_index);
         color_index += 1; 
       // Update median line.
       var medianLine = g.selectAll("line.median")
