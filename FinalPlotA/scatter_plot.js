@@ -7,27 +7,55 @@ var firstTime = true;
 //var svg2;
 var scatter_g2;
 
+
 // Function for selecting colors 
 var colorSelector = function (x) {
     if (x == 1)
-        return d3.hsl(0, 1, 0.5, 0.33);
+        return d3.hsl(0, 1, 0.5, 0.4);
     else if (x == 2)
-        return d3.hsl(35, 1, 0.5, 0.33);
+        return d3.hsl(35, 1, 0.5, 0.4);
     else if (x == 3)
-        return d3.hsl(75, 1, 0.5, 0.33);
+        return d3.hsl(70, 1, 0.5, 0.9);
     else if (x == 4)
-        return d3.hsl(120, 1, 0.5, 0.33);
+        return d3.hsl(120, 1, 0.5, 0.4);
     else if (x == 5)
-        return d3.hsl(175, 1, 0.5, 0.33);
+        return d3.hsl(175, 1, 0.5, 0.4);
     else if (x == 6)
-        return d3.hsl(240, 1, 0.5, 0.33);
+        return d3.hsl(240, 1, 0.5, 0.4);
     else if (x == 7)
-        return d3.hsl(280, 1, 0.5, 0.33);
+        return d3.hsl(280, 1, 0.5, 0.4);
     else if (x == 8)
-        return d3.hsl(315, 1, 0.5, 0.33);
+        return d3.hsl(315, 1, 0.5, 0.4);
     else
-        return d3.hsl(0, 1, 0, 0.33);
+        return d3.hsl(0, 1, 0, 0.4);
 }
+
+/*var colors = ["#3087a1", "#369d94", "#5eab86",
+    "#bbbf77", "#e4b21c", "#e19415",
+    , "#df7409", "#e24e06", "#ef0017"];
+    */
+// Function for selecting colors 
+var colorSelector2 = function (x) {
+    if (x == 1)
+        return "#3087a1";
+    else if (x == 2)
+        return "#369d94";
+    else if (x == 3)
+        return "#5eab86";
+    else if (x == 4)
+        return "#bbbf77";
+    else if (x == 5)
+        return "#e4b21c";
+    else if (x == 6)
+        return "#e19415";
+    else if (x == 7)
+        return "#df7409";
+    else if (x == 8)
+        return "#e24e06";
+    else
+        return "#ef0017";
+}
+
 
 // Function for selecting text
 var textSelector = function (x) {
@@ -151,7 +179,8 @@ function PlotAvgScatter() {
             return ud_scale(d.y)-graph_height;
         })
         .attr('r', 0)
-        .attr('fill', function (d) {return colorSelector(d.id+1)})
+        .attr('fill', function (d) { return colorSelector(d.id + 1) })
+        //.style('opacity', 0.6)
         .attr('id', 'points')
         .transition().duration(1600)
         .attr('r', 7);
@@ -173,7 +202,7 @@ function PlotAvgScatter() {
 			
 	        return lineGenerator(points);
         })
-        .attr('fill', 'None').attr('stroke', d3.hsl(0, 1, 0)).attr('stroke-width', 0).attr('stroke-opacity', 0.33).attr('id', 'y_origin_line')
+        .attr('fill', 'None').attr('stroke', d3.hsl(0, 1, 0)).attr('stroke-width', 0).attr('stroke-opacity', 0.4).attr('id', 'y_origin_line')
         .transition().duration(1600)
         .attr('stroke-width', 1.5);
         
@@ -188,7 +217,7 @@ function PlotAvgScatter() {
 			
 	        return lineGenerator(points);
         })
-        .attr('fill', 'None').attr('stroke', d3.hsl(0, 1, 0)).attr('stroke-width', 0).attr('stroke-opacity', 0.33).attr('id', 'x_origin_line')
+        .attr('fill', 'None').attr('stroke', d3.hsl(0, 1, 0)).attr('stroke-width', 0).attr('stroke-opacity', 0.4).attr('id', 'x_origin_line')
         .transition().duration(1600)
         .attr('stroke-width', 1.5);
 		
@@ -250,7 +279,8 @@ function PlotAvgScatter() {
             return 25 * d;
         })
         .attr('r', function (d) { return 7 })
-        .attr('fill', function (d) { return colorSelector(d); })
+          .attr('fill', function (d) { return colorSelector(d); })
+          //.style('opacity', 0.6)
         .attr('id', 'legend_points');
        
        // For Objects 1-9
@@ -445,7 +475,7 @@ function PlotAllScatter()
 
                 return lineGenerator(points);
             })
-            .attr('fill', 'None').attr('stroke', d3.hsl(0, 1, 0)).attr('stroke-width', 1.5).attr('stroke-opacity', 0.33).attr('id', 'y_origin_line');
+            .attr('fill', 'None').attr('stroke', d3.hsl(0, 1, 0)).attr('stroke-width', 1.5).attr('stroke-opacity', 0.4).attr('id', 'y_origin_line');
 
         scatter_g2.append('path')
             .attr('stroke-opacity', 0)
@@ -458,7 +488,7 @@ function PlotAllScatter()
 
                 return lineGenerator(points);
             })
-            .attr('fill', 'None').attr('stroke', d3.hsl(0, 1, 0)).attr('stroke-width', 1.5).attr('stroke-opacity', 0.33).attr('id', 'x_origin_line');
+            .attr('fill', 'None').attr('stroke', d3.hsl(0, 1, 0)).attr('stroke-width', 1.5).attr('stroke-opacity', 0.4).attr('id', 'x_origin_line');
 
 
 	}
@@ -483,7 +513,7 @@ function PlotAllScatter()
     			
 	            return lineGenerator(points);
             })
-            .attr('fill', 'None').attr('stroke', d3.hsl(0, 1, 0)).attr('stroke-width', 0).attr('stroke-opacity', 0.33).attr('id', 'y_origin_line')
+            .attr('fill', 'None').attr('stroke', d3.hsl(0, 1, 0)).attr('stroke-width', 0).attr('stroke-opacity', 0.4).attr('id', 'y_origin_line')
             .attr('stroke-width', 1.5);
             
         scatter_g2.selectAll('#x_origin_line')
@@ -497,7 +527,7 @@ function PlotAllScatter()
     			
 	            return lineGenerator(points);
             })
-            .attr('fill', 'None').attr('stroke', d3.hsl(0, 1, 0)).attr('stroke-width', 0).attr('stroke-opacity', 0.33).attr('id', 'x_origin_line')
+            .attr('fill', 'None').attr('stroke', d3.hsl(0, 1, 0)).attr('stroke-width', 0).attr('stroke-opacity', 0.4).attr('id', 'x_origin_line')
             .attr('stroke-width', 1.5);
 	}
     
@@ -510,6 +540,7 @@ function PlotAllScatter()
         .attr('cy', function (d) { return ud_err_scale(d.x) - graph_height; }) 
         .attr('r', 0)
         .attr('fill', function (d) { return d.color; })
+        //.style('opacity', 0.6)
         .attr('id', 'points')
         .transition().duration(1600)
         .attr('r', 7);
@@ -655,6 +686,7 @@ function DrawTargetCirclesOverImage(image_g, colorIndex) {
         })
         .attr('r', 20)
         .attr('fill', "transparent") 
+        //.style('opacity', 0.8)
         .attr('stroke', "transparent") 
         .attr('stroke-width', 6)
         .attr('id', 'image_points');

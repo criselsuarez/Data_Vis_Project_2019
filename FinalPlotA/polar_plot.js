@@ -14,9 +14,17 @@ const chartRadius = height / 2 - 40;
 var some_data_deg = [0, 45, 90, 135, 180, 225, 270, 315]
 var some_data_deg2 = [-90, -20, -10, 0, 10, 20, 90, 180]
 
-var colors = [d3.hsl(0, 1, 0.5, 0.33), d3.hsl(35, 1, 0.5, 0.33), d3.hsl(75, 1, 0.5, 0.33),
-d3.hsl(120, 1, 0.5, 0.33), d3.hsl(175, 1, 0.5, 0.33), d3.hsl(240, 1, 0.5, 0.33),
-d3.hsl(280, 1, 0.5, 0.33), d3.hsl(315, 1, 0.5, 0.33), d3.hsl(0, 1, 0, 0.33)];
+var colors = [d3.hsl(0, 1, 0.5, 0.4), d3.hsl(35, 1, 0.5, 0.4), d3.hsl(70, 1, 0.5, 0.4),
+d3.hsl(120, 1, 0.5, 0.99), d3.hsl(175, 1, 0.5, 0.4), d3.hsl(240, 1, 0.5, 0.4),
+    d3.hsl(280, 1, 0.5, 0.4), d3.hsl(315, 1, 0.5, 0.4), d3.hsl(0, 1, 0, 0.33)];
+
+var colors2 = ["#3087a1", "#369d94", "#5eab86",
+    "#bbbf77", "#e4b21c", "#e19415",
+    , "#df7409", "#e24e06", "#ef0017"];
+
+var colors3 = ["#78878b", "#bd3927", "#ebc799",
+    "#152d77", "#578ec9", "#9fc0d7",
+    , "#c5744e", "#254478", "#b4823e"];
 
 // num arcs 
 const arcWidth = (chartRadius - arcMinRadius - numArcs * arcPadding) / numArcs;
