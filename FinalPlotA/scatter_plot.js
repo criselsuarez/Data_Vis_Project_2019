@@ -53,8 +53,6 @@ var textSelector = function (x) {
 
 
 function PlotAvgScatter() {
-    console.log("Update 08");
-
 
     var svg_width = 1600; //650; //2000; 
     var svg_height = 550; //1200; //550;
@@ -74,7 +72,7 @@ function PlotAvgScatter() {
     scatter_g2 = svg.append("g").attr('id', 'all_scatter')
         .attr("transform", "translate(" + (svg_width / 2.6) + "," + (450 + margin.top) + ")");
 
-    var image_points_g = svg.append("g").attr('id', 'all_scatter')
+    var image_points_g = svg.append("g").attr('id', 'img_points')
         .attr("transform", "translate(" + (svg_width / 1.55) + "," + ( margin.top) + ")");
 
     var legend = svg.append("g").attr('class', 'legend')

@@ -22,11 +22,12 @@ function PlotWhiskers(axis_string) {
     // variable declarations 
     var labels = true; // show the text labels beside individual boxplots?
 
-    var top_padding = 40;
-    var left_padding = 575;
+    var top_padding = 20;
+    var left_padding = 615;
     var margin = { top: 30, right: 50, bottom: 70, left: 50 };
+    var svg_width = 1800; 
     var width = 900 - margin.left - margin.right;
-    var height = 400 - margin.top - margin.bottom;
+    var height = 500 - margin.top - margin.bottom;
 
     var min = Infinity,
         max = -Infinity;
@@ -107,14 +108,18 @@ function PlotWhiskers(axis_string) {
         .showLabels(labels);
 
     var svg = d3.select("body").append("svg")
-        .attr("transform", "translate(" + left_padding + "," + 10 + ")")
-        .attr("width", width + margin.left + margin.right)
+        .attr("transform", "translate(" + 0 + "," + 0 + ")")
+        .attr("width", svg_width) //width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
-        .attr("class", "box")
-        .append("g"); 
+        .attr('id', function (d) {
+            if (axis_string == "Up/Down") return 'bot_svg';
+            else return 'mid_svg';
+        })
+        .attr("class", "box");
+        //.append("g"); 
 
     var whisker_g = svg.append("g").attr('id', 'whisker_plot')
-        .attr("transform", "translate(" + top_padding + "," + 0+")");
+        .attr("transform", "translate(" + left_padding + "," + top_padding+")");
 
 
     // the x-axis

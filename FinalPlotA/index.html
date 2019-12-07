@@ -19,12 +19,6 @@
             PlotAvgScatter();
         })
 
-        // scatter plot 2 (all [median] points)
-        d3.csv('Data/all_medians.csv', function (data) {
-            all_data = data;
-            PlotAllScatter();
-        })
-
         // box and whisker plot Y axis
         d3.csv('Data/all_change_error_y.csv', function (data) {
             whisker_data = data;
@@ -36,10 +30,21 @@
             PlotWhiskers("Up/Down");
         })
 
-    /*d3.csv('spatial_memory_adult_avg_errs_abssort.csv', function (data) {
-    spatial_data_mod = data;
-    plot_it2();
-    })*/
+        // scatter plot 2 (all [median] points)
+        d3.csv('Data/all_medians.csv', function (data) {
+            all_data = data;
+            PlotAllScatter();
+        })
+
+        // polar plots that i refuse to trash lol
+        d3.csv('Data/spatial_memory_adult_avg_errs_abssort.csv', function (data) {
+            avg_data_mod = data;
+            PlotPolar();
+        }) 
+
+
+  
+
     </script>
     <div class="img_container">
         <div class="caption">Virtual Environment</div>
