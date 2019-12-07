@@ -544,8 +544,7 @@ function plot_it_b()
             // remove text
             scatter_g2.selectAll('#hoverText1').data([]).exit().remove();
             
-            scatter_g2.selectAll('#hoverText2').data([]).exit().remove();
-            
+            scatter_g2.selectAll('#hoverText2').data([]).exit().remove();            
             // remove line
             scatter_g2.selectAll('#lineGraph').data([]).exit().remove();
         });
@@ -558,24 +557,14 @@ function plot_it_b()
 // if no objects are clicked -> set all values to false in selected_objects array
 // else -> for each object that is selected, set its index in selected_objects to true
 function UpdateSelectedObjects() {  
-    //if (objects_clicked.length == 0) {
         for (var i = 0; i < selected_objects.length; i++) {
             selected_objects[i] = false;         
         }
-    //}
-    //else {
         for (var i = 0; i < objects_clicked.length; i++) {
-            //console.log(objects_clicked[i]); 
-            //if (objects_clicked.includes(i)) {
-            //if (selected_objects(objects_clicked[i])) {//(objects_clicked.includes(i)) {
             selected_objects[parseInt(objects_clicked[i])] = true;
-            
-            //else {
-            //    selected_objects[i] = false;
-            //}
         }
-   // }
-    // DEBUG. REMOVE LATERE
+
+    // DEBUG. REMOVE LATER.
     var selected_string = "selected: [ "; 
     for (var i = 0; i < selected_objects.length; i++) {
         if (selected_objects[i] == true)
@@ -583,7 +572,7 @@ function UpdateSelectedObjects() {
     }
     selected_string += "]";
 
-
+    // DEBUG. REMOVE LATER.
     var clicked_string = "clicked: [ ";
     for (var i = 0; i < objects_clicked.length; i++) {
         clicked_string += objects_clicked[i] + ", ";
@@ -594,7 +583,7 @@ function UpdateSelectedObjects() {
     console.log(selected_string); 
 } 
 
-// Display the legend colors 
+// Update the legend colors 
 function UpdateLegend(legend) {
 
     legend.selectAll('circle')     
@@ -618,7 +607,7 @@ function UpdateLegend(legend) {
         })
 }
 
-// Display the legend colors 
+// Display the highlight circles in reference image
 function UpdateSelectedCircles(scatter_plot) {
 
     scatter_plot.selectAll('circle')
