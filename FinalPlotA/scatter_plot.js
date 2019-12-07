@@ -52,7 +52,7 @@ var textSelector = function (x) {
 }
 
 
-function plot_it() {
+function PlotAvgScatter() {
     console.log("Update 08");
 
 
@@ -88,14 +88,14 @@ function plot_it() {
     var X_Error = [];
     for(var i=1; i<=9; i++)
     {
-        X_Error.push(+spatial_data[0]['Stim'+i+'_ErrX_Average']);
+        X_Error.push(+avg_data[0]['Stim'+i+'_ErrX_Average']);
     }
     
     // array of the Left/Right error only (used for displaying x-axis scale)
     var Y_Error = [];
     for(var i=1; i<=9; i++)
     {   
-        Y_Error.push(+spatial_data[0]['Stim'+i+'_ErrY_Average']);
+        Y_Error.push(+avg_data[0]['Stim'+i+'_ErrY_Average']);
     }
     
     // aggregate data (X_Error and Y_Error combined)
@@ -105,8 +105,8 @@ function plot_it() {
         var obj = 
         {
             'id': i-1,
-            'y': spatial_data[0]['Stim'+i+'_ErrX_Average'],
-            'x': spatial_data[0]['Stim' + i + '_ErrY_Average'],
+            'y': avg_data[0]['Stim'+i+'_ErrX_Average'],
+            'x': avg_data[0]['Stim' + i + '_ErrY_Average'],
             'color': colorSelector(i-1)
         };        
         errorData.push(obj);
@@ -273,39 +273,51 @@ function plot_it() {
     UpdateLegend(legend); 
     UpdateTargetCirclesOverImage(image_points_g, colorIndex);
 
-	 // Listen for when scatterplot points are clicked 
-	 scatter_g.selectAll('circle')
-         .on('click', function (d) {
-             var id_val = parseInt(d.id); 
-             //console.log("val: " + selected_objects[id_val] + ", cur_id: " + id_val);
+    OnClickScatterPlot(scatter_g, legend, image_points_g, colorIndex);
+    OnClickScatterLegend(scatter_g, legend, image_points_g, colorIndex);
+}
 
-             if (selected_objects[id_val]) {
+
+// hmm may or may not implement this..
+function OnZoomScatterPlotAllPoints(scatter_g2) {
+
+}
+
+// Listen for when scatterplot points are clicked 
+function OnClickScatterPlot(scatter_g, legend, image_points_g, colorIndex) {
+    scatter_g.selectAll('circle')
+        .on('click', function (d) {
+            var id_val = parseInt(d.id);
+            //console.log("val: " + selected_objects[id_val] + ", cur_id: " + id_val);
+            if (selected_objects[id_val]) {
                 var index = objects_clicked.indexOf(id_val);
-                objects_clicked.splice(index, 1);                 
+                objects_clicked.splice(index, 1);
                 d3.select(this)
-                     .attr('fill', colorSelector(id_val+1))
-                     .style("stroke-width", 0)
+                    .attr('fill', colorSelector(id_val + 1))
+                    .style("stroke-width", 0)
                     .style("stroke", "transparent");
-             }
-             else {
+            }
+            else {
                 if (!objects_clicked.includes(id_val))
                     objects_clicked.push(id_val);
                 d3.select(this)
                     .attr('fill', "transparent")
-                     .style("stroke-width", 5)
-                     .style("stroke", colorSelector(id_val+1));
-             }
+                    .style("stroke-width", 5)
+                    .style("stroke", colorSelector(id_val + 1));
+            }
             UpdateSelectedObjects();
-            plot_it_b();
+            PlotAllScatter();
             UpdateLegend(legend);
             UpdateTargetCirclesOverImage(image_points_g, colorIndex);
-
-
         });
-    // Listen for when scatterplot points are clicked
+}
+
+
+// Listen for when scatterplot points are clicked
+function OnClickScatterLegend(scatter_g, legend, image_points_g, colorIndex) {
     legend.selectAll('circle')
         .on('click', function (d, i) {
-            
+
             if (selected_objects[i]) {
                 var index = objects_clicked.indexOf(i);
                 objects_clicked.splice(index, 1);
@@ -314,17 +326,17 @@ function plot_it() {
                 if (!objects_clicked.includes(i))
                     objects_clicked.push(i);
             }
-            
+
             UpdateSelectedObjects();
             UpdateSelectedCircles(scatter_g);
             UpdateLegend(legend)
             UpdateTargetCirclesOverImage(image_points_g, colorIndex);
-            plot_it_b();
-            
+            PlotAllScatter();
+
         });
 }
 
-function plot_it_b() 
+function PlotAllScatter() 
 {
     // generates a line given an array [x, y]
     var lineGenerator = d3.line()
@@ -398,7 +410,6 @@ function plot_it_b()
 
                     errorData.push(obj);
                 } // end if 
-            //} // end for
         } // end else
     }
     
@@ -550,6 +561,8 @@ function plot_it_b()
         });
     
     firstTime = false;
+    OnZoomScatterPlotAllPoints(scatter_g2);
+
 }
 
 

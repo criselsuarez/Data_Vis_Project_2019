@@ -5,25 +5,37 @@
     <title>Data Vis Project -  D3, CSV, and Polar Coordinates</title>
     <link rel="stylesheet" href="style.css">
     <script type='text/javascript' src='https://d3js.org/d3.v4.min.js'></script>
-    <script type='text/javascript' src='polar_plot.js'></script>
+
+    <script src="box.js"></script>
+
     <script type='text/javascript' src='scatter_plot.js'></script>
+    <script type='text/javascript' src='box_plot.js'></script>
+    <script type='text/javascript' src='polar_plot.js'></script>
 </head> 
 <body>
     <script type='text/javascript'>
-        d3.csv('spatial_memory_adult.csv', function (data) {
-            spatial_data = data;
-            plot_it();
+        // scatter plot 1 (averages)
+        d3.csv('Data/spatial_memory_adult.csv', function (data) {
+            avg_data = data;
+            PlotAvgScatter();
         })
 
-        d3.csv('all_medians.csv', function (data) {
+        // scatter plot 2 (all [median] points)
+        d3.csv('Data/all_medians.csv', function (data) {
             all_data = data;
-            plot_it_b();
+            PlotAllScatter();
         })
 
-        d3.csv('spatial_memory_adult_avg_errs_abssort.csv', function (data) {
-            spatial_data_mod = data;
-            plot_it2();
-        })
+        // box and whisker plots
+        d3.csv('Data/all_change_error_x.csv', function (data) {
+            whisker_data = data;
+            PlotWhiskers();
+    })
+
+    /*d3.csv('spatial_memory_adult_avg_errs_abssort.csv', function (data) {
+    spatial_data_mod = data;
+    plot_it2();
+    })*/
     </script>
     <div class="img_container">
         <div class="caption">Virtual Environment</div>
