@@ -101,12 +101,11 @@ function plot_it() {
     {  
         var obj = 
         {
-            'id': i,
+            'id': i-1,
             'y': spatial_data[0]['Stim'+i+'_ErrX_Average'],
             'x': spatial_data[0]['Stim' + i + '_ErrY_Average'],
-            'color': colorSelector(i)
-        };
-        
+            'color': colorSelector(i-1)
+        };        
         errorData.push(obj);
     }
     
@@ -151,7 +150,7 @@ function plot_it() {
             return ud_scale(d.y)-graph_height;
         })
         .attr('r', 0)
-        .attr('fill', function (d) {return colorSelector(d.id)})
+        .attr('fill', function (d) {return colorSelector(d.id+1)})
         .attr('id', 'points')
         .transition().duration(1200)
         .attr('r', 7);
@@ -222,7 +221,7 @@ function plot_it() {
         			
 			        return lineGenerator(points);
 		        })
-		        .attr('fill', 'None').attr('stroke', function () {return colorSelector(d.id)}).attr('stroke-width', 2).attr('stroke-opacity', 0.5).attr('id', 'lineGraph');
+		        .attr('fill', 'None').attr('stroke', function () {return colorSelector(d.id+1)}).attr('stroke-width', 2).attr('stroke-opacity', 0.5).attr('id', 'lineGraph');
 	    }); 
 	    
 	  // Listen for when points are unhovered
@@ -268,34 +267,52 @@ function plot_it() {
     updateLegend(legend); 
 
 
-	 // Listen for when points are clicked
+	 // Listen for when scatterplot points are clicked 
 	 scatter_g.selectAll('circle')
          .on('click', function (d) {
-             var is_classed = d3.select(this).classed('selected');
+             var id_val = parseInt(d.id); 
+             //console.log("val: " + selected_objects[id_val] + ", cur_id: " + id_val);
 
-             if (is_classed) {
-                selected_objects[d.id-1] = false; 
-                objects_clicked.pop(d.id);
-                 d3.select(this)
-                    .attr('fill', colorSelector(d.id))
-                     .classed('selected', !is_classed)
+             if (selected_objects[id_val]) {
+                var index = objects_clicked.indexOf(id_val);
+                objects_clicked.splice(index, 1);                 
+                d3.select(this)
+                     .attr('fill', colorSelector(id_val+1))
                      .style("stroke-width", 0)
                     .style("stroke", "transparent");
              }
              else {
-                 selected_objects[d.id-1] = true; 
-                objects_clicked.push(d.id);
-                 d3.select(this)
+                if (!objects_clicked.includes(id_val))
+                    objects_clicked.push(id_val);
+                d3.select(this)
                     .attr('fill', "transparent")
-                     .classed('selected', !is_classed)
                      .style("stroke-width", 5)
-                     .style("stroke", colorSelector(d.id));
+                     .style("stroke", colorSelector(id_val+1));
              }
             update_selected_objects();
             plot_it_b();
             updateLegend(legend)
 
-	 });
+        });
+    // Listen for when scatterplot points are clicked
+    legend.selectAll('circle')
+        .on('click', function (d, i) {
+            
+            if (selected_objects[i]) {
+                var index = objects_clicked.indexOf(i);
+                objects_clicked.splice(index, 1);
+            }
+            else {
+                if (!objects_clicked.includes(i))
+                    objects_clicked.push(i);
+            }
+            
+            update_selected_objects();
+            updateSelectedCircles(scatter_g);
+            updateLegend(legend)
+            plot_it_b();
+            
+        });
 }
 
 function plot_it_b() 
@@ -329,12 +346,15 @@ function plot_it_b()
 
     for (var i = 0; i < all_data.length; i++) {
         // if no item is selected, show all items
+        var obj_id = parseInt(all_data[i]['ObjectId']);
+
         if (objects_clicked.length == 0) {
             objects_clicked = [];
             var currX = parseFloat(all_data[i]['ChangeErrorX']);
             var currY = parseFloat(all_data[i]['ChangeErrorY']);
             var obj =
             {
+                'id': obj_id,
                 'x': currX,
                 'y': currY,
                 'color': colorSelector((i + 1) % 9)
@@ -343,9 +363,6 @@ function plot_it_b()
         }    
         else // else show only that item in scatterplot 
         {
-            //for (var j = 0; j < objects_clicked.length; j++) { // This is ugly, but js's .includes() wasn't working) :C
-            //cur_obj = objects_clicked[j]-1;
-            var obj_id = parseInt(all_data[i]['ObjectId']);
             if (selected_objects[obj_id]) {
                     var currX = parseFloat(all_data[i]['ChangeErrorX']);
                     var currY = parseFloat(all_data[i]['ChangeErrorY']);
@@ -364,6 +381,7 @@ function plot_it_b()
 
                     var obj =
                     {
+                        'id': obj_id,
                         'x': currX,
                         'y': currY,
                         'color': colorSelector(obj_id+1)
@@ -530,22 +548,41 @@ function plot_it_b()
 // selected_objects is used to toggle the appearance of elements during interactions
 // if no objects are clicked -> set all values to false in selected_objects array
 // else -> for each object that is selected, set its index in selected_objects to true
-function update_selected_objects() {    
-    if (objects_clicked.length == 0) {
+function update_selected_objects() {  
+    //if (objects_clicked.length == 0) {
         for (var i = 0; i < selected_objects.length; i++) {
-            selected_objects[i] = false; 
+            selected_objects[i] = false;         
         }
-    }
-    else {
+    //}
+    //else {
         for (var i = 0; i < objects_clicked.length; i++) {
-            console.log(objects_clicked[i]); 
-            if (objects_clicked.includes(i))
-                selected_objects[i] = true;
-            else
-                selected_objects[i] = false;
+            //console.log(objects_clicked[i]); 
+            //if (objects_clicked.includes(i)) {
+            //if (selected_objects(objects_clicked[i])) {//(objects_clicked.includes(i)) {
+            selected_objects[parseInt(objects_clicked[i])] = true;
+            
+            //else {
+            //    selected_objects[i] = false;
+            //}
         }
+   // }
+    // DEBUG. REMOVE LATERE
+    var selected_string = "selected: [ "; 
+    for (var i = 0; i < selected_objects.length; i++) {
+        if (selected_objects[i] == true)
+            selected_string += i + ", ";
     }
+    selected_string += "]";
 
+
+    var clicked_string = "clicked: [ ";
+    for (var i = 0; i < objects_clicked.length; i++) {
+        clicked_string += objects_clicked[i] + ", ";
+    }
+    clicked_string += "]";
+
+    console.log(clicked_string); 
+    console.log(selected_string); 
 } 
 
 // Display the legend colors 
@@ -567,6 +604,30 @@ function updateLegend(legend) {
         .style("stroke", function (d) {
             if (selected_objects[d-1])
                 return colorSelector(d);
+            else
+                return "transparent";
+        })
+}
+
+// Display the legend colors 
+function updateSelectedCircles(scatter_plot) {
+
+    scatter_plot.selectAll('circle')
+        .attr('fill', function (d, i) {
+            if (selected_objects[i])
+                return "transparent";
+            else
+                return colorSelector(i+1);
+        })
+        .style("stroke-width", function (d, i) {
+            if (selected_objects[i])
+                return 5;
+            else
+                return 0;
+        })
+        .style("stroke", function (d, i) {
+            if (selected_objects[i])
+                return colorSelector(i+1);
             else
                 return "transparent";
         })
