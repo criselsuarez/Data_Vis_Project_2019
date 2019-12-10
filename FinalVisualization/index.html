@@ -20,12 +20,12 @@
         })
 
         // box and whisker plot Y axis
-        d3.csv('Data/all_change_error_y.csv', function (data) {
+        d3.csv('Data/all_change_error_y2.csv', function (data) {
             whisker_data = data;
             PlotWhiskers("Left/Right");
         })
         // box and whisker plot X axis
-        d3.csv('Data/all_change_error_x.csv', function (data) {
+        d3.csv('Data/all_change_error_x2.csv', function (data) {
             whisker_data = data;
             PlotWhiskers("Up/Down");
         })
